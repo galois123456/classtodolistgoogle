@@ -25,3 +25,25 @@ test('다른 계정과 분야 이름 중복 변경은 거부',async()=>{
 test('전체 백업 복원은 기존 분야 ID로 연결하고 중복 일정을 건너뜀',async()=>{
  const {db}=setup();const cat=check(await db.from('todo_categories').insert({name:'수업'}).select().single());const v={format:'school-todo-google-v1',tables:{todo_categories:[{id:'old-cat',user_id:'old',name:'수업'}],todo_tasks:[{id:'task',user_id:'old',title:'백업 일정',category_id:'old-cat',priority:'medium'}],todo_notes:[],todo_timetables:[],todo_timetable_details:[]}};await db.restoreBackup(v);assert.equal(check(await db.from('todo_tasks').select())[0].category_id,cat.id);await db.restoreBackup(v);assert.equal(check(await db.from('todo_tasks').select()).length,1);const backup=await db.backup();assert.equal(backup.tables.todo_categories.length,1);assert.equal(backup.tables.todo_tasks.length,1);
 });
+
+async function deletionFixture(){
+ const f=setup();
+ const template={activeId:'a',schedules:[{id:'a',name:'유지',rows:[{id:'row-a',label:'1교시'}]},{id:'b',name:'삭제 대상',rows:[{id:'row-b',label:'2교시'}]}]};
+ check(await f.db.from('todo_timetables').upsert({user_id:'owner',template},{onConflict:'user_id'}));
+ for(const [row_id,entry_date,body] of [['row-a','2026-10-04','유지 기록'],['row-b','2025-01-01','과거 기록'],['row-b','2028-12-31','미래 기록']])check(await f.db.from('todo_timetable_details').upsert({user_id:'owner',row_id,entry_date,body},{onConflict:'user_id,row_id,entry_date'}));
+ return f;
+}
+test('시간표 삭제는 다른 시간표를 보존하고 모든 날짜의 연결된 파일을 삭제',async()=>{
+ const f=await deletionFixture(),db=createDriveStore(f);const result=check(await db.deleteTimetable('b'));assert.equal(result.cleanupPending,false);assert.deepEqual(result.template.schedules.map(s=>s.id),['a']);assert.deepEqual(result.template.deletedRowIds,['row-b']);const details=check(await db.from('todo_timetable_details').select());assert.equal(details.length,1);assert.equal(details[0].body,'유지 기록');assert.equal(f.files.size,2);
+ const last=check(await db.deleteTimetable('a'));assert.equal(last.template.schedules[0].name,'기본 시간표');assert.deepEqual(last.template.rows,[]);assert.equal(check(await db.from('todo_timetable_details').select()).length,0);
+});
+test('정리 중 연결 실패는 삭제 표시를 보존하고 재접속 후 나머지 파일을 정리',async()=>{
+ const f=await deletionFixture();let failed=true;
+ const fetcher=async(url,options)=>failed && options.method==='DELETE'?{ok:false,status:503,json:async()=>({error:{message:'연결 실패'}})}:f.fetcher(url,options);
+ const db=createDriveStore({...f,fetcher});const result=check(await db.deleteTimetable('b'));assert.equal(result.cleanupPending,true);assert.deepEqual(result.template.schedules.map(s=>s.id),['a']);assert.equal(f.files.size,4);
+ const reopened=createDriveStore({...f,fetcher});assert.deepEqual(check(await reopened.from('todo_timetables').select().single()).template.deletedRowIds,['row-b']);failed=false;assert.equal(check(await reopened.cleanupTimetableDetails()).cleanupPending,false);assert.equal(f.files.size,2);assert.equal(check(await reopened.from('todo_timetable_details').select()).length,1);
+});
+test('시간표 저장부터 실패하면 세부사항 파일을 삭제하지 않음',async()=>{
+ const f=await deletionFixture(),db=createDriveStore({...f,fetcher:async(url,options)=>options.method==='PATCH'?{ok:false,status:503,json:async()=>({error:{message:'저장 실패'}})}:f.fetcher(url,options)});
+ assert.ok((await db.deleteTimetable('b')).error);assert.equal(f.files.size,4);const fresh=createDriveStore(f);assert.equal(check(await fresh.from('todo_timetables').select().single()).template.schedules.length,2);assert.equal(check(await fresh.from('todo_timetable_details').select()).length,3);
+});

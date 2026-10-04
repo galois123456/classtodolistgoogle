@@ -1,3 +1,4 @@
+import {normalizeTimetables,removeTimetable} from './timetable-model.js';
 import {tables,logicalKey,defaults,validateRow,matches,resultRows} from './drive-model.js';
 const SCHEMA='school-todo-google-v1';
 const API='https://www.googleapis.com/drive/v3';
@@ -96,8 +97,42 @@ export function createDriveStore({auth,fetcher=fetch,uuid=()=>crypto.randomUUID(
       }
     };return chain;
   }
+  function serialized(action){
+    const owner=auth.user?.id;
+    const run=async()=>{try{if(!owner || auth.user?.id!==owner)throw new Error('계정이 변경되어 작업을 취소했습니다.');return {data:await action(owner),error:null};}catch(error){return {data:null,error};}};
+    const result=tail.then(run,run);tail=result.then(()=>{});return result;
+  }
+  async function cleanupDetails(owner,template){
+    const ids=new Set(template.deletedRowIds || []);if(!ids.size)return {cleanupPending:false};
+    try{
+      const records=await readTable('todo_timetable_details',true);let failed=false;
+      for(const item of records.filter(i=>ids.has(i.row.row_id))){
+        if(auth.user?.id!==owner)throw new Error('계정이 변경되었습니다.');
+        for(const id of item.fileIds){try{await api(`${API}/files/${encodeURIComponent(id)}`,{method:'DELETE'});}catch{failed=true;}}
+      }
+      return {cleanupPending:failed};
+    }catch{return {cleanupPending:true};}
+    finally{cache.delete(owner+':todo_timetable_details');}
+  }
+  function deleteTimetable(scheduleId){return serialized(async owner=>{
+    const records=await readTable('todo_timetables',true),record=records[0];
+    if(!record)throw new Error('저장된 시간표가 없습니다. 다시 불러오세요.');
+    const previous=normalizeTimetables(record.row.template);
+    const template=removeTimetable(previous,scheduleId);
+    if(auth.user?.id!==owner)throw new Error('계정이 변경되었습니다.');
+    // Drive has no cross-file transaction. Commit the template with persistent
+    // deleted-row markers first, so details cannot reappear after partial cleanup.
+    if(previous.schedules.some(s=>s.id===scheduleId))await write('todo_timetables',{...record.row,template,updated_at:new Date().toISOString()},record);
+    cache.delete(owner+':todo_timetables');
+    const cleanup=await cleanupDetails(owner,template);
+    return {template,...cleanup};
+  });}
+  function cleanupTimetableDetails(){return serialized(async owner=>{
+    const records=await readTable('todo_timetables',true);
+    return cleanupDetails(owner,normalizeTimetables(records[0]?.row.template));
+  });}
   function reset(){generation++;cache.clear();inflight.clear();}
-  return {from,auth,reset,async backup(){const data={};for(const t of tables)data[t]=(await readTable(t,true)).map(i=>clone(i.row));return {format:SCHEMA,exportedAt:new Date().toISOString(),tables:data};},async restoreBackup(value){
+  return {from,auth,reset,deleteTimetable,cleanupTimetableDetails,async backup(){const data={};for(const t of tables)data[t]=(await readTable(t,true)).map(i=>clone(i.row));return {format:SCHEMA,exportedAt:new Date().toISOString(),tables:data};},async restoreBackup(value){
     if(value.format!==SCHEMA || !value.tables)throw new Error('구글 버전의 전체 백업 파일이 아닙니다.');
     // Remap ownership to the currently authorized Google account, preserving row ids.
     for(const table of tables){if(!Array.isArray(value.tables[table]))throw new Error('백업 데이터가 누락되었습니다.');for(const row of value.tables[table])validateRow(table,{...row,user_id:auth.user.id},auth.user.id);}

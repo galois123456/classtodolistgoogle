@@ -27,7 +27,18 @@ export function normalizeTimetables(value) {
     ? value.schedules.map((item,index)=>({id:String(item.id || `schedule-${index}`),name:String(item.name || `시간표 ${index+1}`).slice(0,40),...normalizeTemplate(item)}))
     : [{id:'default',name:'기본 시간표',...normalizeTemplate(value)}];
   const activeId=schedules.some(item=>item.id===value?.activeId)?value.activeId:schedules[0].id;
-  return {schedules,activeId,rows:schedules.find(item=>item.id===activeId).rows};
+  const liveRows=new Set(schedules.flatMap(item=>item.rows.map(row=>row.id)));
+  const deletedRowIds=[...new Set(Array.isArray(value?.deletedRowIds)?value.deletedRowIds.map(String):[])].filter(id=>!liveRows.has(id));
+  return {schedules,activeId,rows:schedules.find(item=>item.id===activeId).rows,deletedRowIds};
+}
+
+export function removeTimetable(value,id) {
+  const collection=normalizeTimetables(value), removed=collection.schedules.find(item=>item.id===id);
+  if(!removed)return collection;
+  collection.deletedRowIds.push(...removed.rows.map(row=>row.id));
+  collection.schedules=collection.schedules.filter(item=>item.id!==id);
+  if(!collection.schedules.length)collection.schedules=[{id:crypto.randomUUID(),name:'기본 시간표',rows:[]}];
+  return normalizeTimetables(collection);
 }
 
 export function duplicateTimetable(source) {

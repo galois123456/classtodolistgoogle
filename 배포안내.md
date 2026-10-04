@@ -1,6 +1,15 @@
-# 나만의 학교 일정 To Do List — 구글 버전 ver1.01
+# 나만의 학교 일정 To Do List — 구글 버전 ver1.02
 
-첨부한 Supabase ver1.22를 바탕으로 만들었습니다. 일정, 검색·필터, 캘린더, 음력·반복, 공유 복사, 메모장 자동저장, 여러 시간표와 날짜별 세부사항 기능을 유지합니다. 로그인과 저장은 Google 계정과 본인의 Google Drive를 사용합니다. Supabase, Vercel, 별도 데이터베이스는 필요 없습니다.
+첨부한 Supabase ver1.23를 바탕으로 만들었습니다. 일정, 검색·필터, 캘린더, 음력·반복, 공유 복사, 메모장 자동저장, 여러 시간표와 날짜별 세부사항 기능을 유지합니다. 로그인과 저장은 Google 계정과 본인의 Google Drive를 사용합니다. Supabase, Vercel, 별도 데이터베이스는 필요 없습니다.
+
+## ver1.02 변경 사항
+
+- 시간표 설정에서 시간표 복사 오른쪽에 삭제 버튼을 추가했습니다.
+- ‘편집할 시간표’에서 고른 시간표만 삭제합니다. 확인창에서 확인하면 즉시 저장되며 설정 취소로 되돌릴 수 없습니다.
+- 선택한 시간표의 교시·과목·색상과 모든 날짜의 세부사항 파일도 삭제합니다. 다른 시간표와 해당 기록은 유지합니다.
+- 표시 중인 시간표를 삭제하면 남은 시간표를 표시하고, 마지막 시간표를 삭제하면 빈 기본 시간표를 만듭니다.
+- Google Drive에는 여러 파일을 하나의 데이터베이스 트랜잭션으로 삭제하는 기능이 없습니다. 먼저 시간표 삭제와 삭제한 행 정보를 저장한 뒤 관련 세부사항 파일을 정리합니다. 중간에 연결이 끊겨도 삭제된 시간표와 기록이 다시 표시되지 않습니다. 정리가 남으면 안내와 재시도 버튼이 표시되며 시간표를 다시 열 때도 정리를 재시도합니다. 정리 안내가 사라져야 실제 관련 파일 삭제까지 끝난 상태입니다.
+- Google ver1.01 사용자는 기존 config.js의 Client ID와 선택적 Calendar API 키를 새 배포본에 그대로 옮기세요. 같은 Google Cloud 프로젝트·구글 계정을 유지하면 기존 Drive 데이터를 사용합니다.
 
 ## 반드시 알아둘 로그인 동작
 
@@ -95,7 +104,7 @@ Client ID는 공개용 식별자입니다. Client secret, 구글 비밀번호, �
 
 ## 검증 범위
 
-자동 테스트 43개와 빌드된 앱의 DOM 실행 검사에서 로그인 복원·토큰 만료·계정 혼동 차단·Drive CRUD·전체 백업 복원과 기존 일정·시간표 기능을 확인했습니다. 구글 서비스는 모의 응답으로 검사했습니다. 실제 Google OAuth 클라이언트, 학교 계정 정책, 실제 Drive API 연결은 본인의 Client ID를 등록하여 배포한 뒤 확인해야 합니다.
+자동 테스트 48개와 빌드된 앱의 DOM 실행 검사에서 로그인 복원·토큰 만료·계정 혼동 차단·Drive CRUD·전체 백업 복원과 기존 일정·시간표 기능을 확인했습니다. 구글 서비스는 모의 응답으로 검사했습니다. 실제 Google OAuth 클라이언트, 학교 계정 정책, 실제 Drive API 연결은 본인의 Client ID를 등록하여 배포한 뒤 확인해야 합니다.
 
 참고 문서:
 - https://developers.google.com/identity/oauth2/web/guides/use-token-model
@@ -104,4 +113,4 @@ Client ID는 공개용 식별자입니다. Client secret, 구글 비밀번호, �
 - https://developers.google.com/workspace/guides/configure-oauth-consent
 - https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
 
-Google ver1.01 · made by yoonsungho
+Google ver1.02 · made by yoonsungho

@@ -77,3 +77,4 @@
 .timetable-list-actions .text-button{padding:3px 5px;white-space:nowrap;font-size:.8rem}
 .timetable-list-actions .detail-delete{color:var(--danger)}
 @media(max-width:760px){.topbar .header-actions .header-nav{width:100%;min-width:0;min-height:34px;padding:6px 3px}}
+.timetable-collection-actions .timetable-delete{color:var(--danger);background:var(--surface);border-color:var(--line)}
