@@ -1,0 +1,82 @@
+.header-pill.notes-link{color:#9a3412;background:#ffedd5;border-color:#fdba74}
+:root[data-theme=dark] .header-pill.notes-link{background:#7c2d12;color:#ffedd5;border-color:#ea580c}
+.notes-page-active .tabs{display:none}
+.notes-view{background:transparent;padding:0}
+.notes-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 20px}
+.notes-toolbar .new-note{background:#f59e0b;color:#422006;font-weight:800}
+.notes-toolbar .new-note:hover{background:#fbbf24}
+.notes-title{font-size:1.3rem;margin:0 0 8px}
+.notes-message{font-size:.85rem;color:var(--muted);line-height:1.6;margin:0 0 14px;overflow-wrap:anywhere}
+.notes-message:empty{display:none}
+.notes-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;align-items:start;padding-bottom:28px}
+.sticky-note{display:flex;flex-direction:column;min-width:0;height:clamp(320px,27vw,410px);padding:15px 18px 12px;border-radius:3px 3px 20px 3px;background:var(--paper);color:#27272a;box-shadow:3px 8px 18px #0002;border:1px solid #0000000d}
+.paper-yellow{--paper:#fff39a}.paper-orange{--paper:#ffd5a3}.paper-pink{--paper:#ffd1e0}.paper-blue{--paper:#c6e9ff}.paper-green{--paper:#c8f2d6}.paper-purple{--paper:#e5d5ff}.paper-cream{--paper:#fff4dc}.paper-white{--paper:#f8fafc}
+.sticky-top{display:flex;align-items:center;justify-content:space-between;gap:5px;min-height:34px;margin-bottom:8px}
+.note-status{font-size:.7rem;color:#57534e;white-space:nowrap}
+.note-tools{display:flex;align-items:center;gap:8px;margin-left:auto}
+.note-tools button,.paper-picker summary{font:inherit;font-size:.8rem;font-weight:750;background:#ffffff5c;border:1px solid #0002;border-radius:7px;padding:7px 9px;min-height:34px;color:#3f3f46;cursor:pointer}
+.note-tools .remove-note{color:#b91c1c}
+.paper-picker{position:relative}
+.paper-picker summary{list-style:none;white-space:nowrap}
+.paper-picker summary::-webkit-details-marker{display:none}
+.paper-palette{position:absolute;z-index:12;right:0;top:calc(100% + 4px);display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:8px;width:232px;border:1px solid #0002;border-radius:10px;background:#fff;box-shadow:0 8px 22px #0003}
+.note-tools .paper-swatch{background:var(--paper);color:#27272a;font-size:.75rem;padding:8px 4px;min-height:38px}
+.paper-swatch[aria-pressed=true]{outline:2px solid #2563eb;outline-offset:-2px}
+.sticky-note .note-body{display:block;flex:1;min-height:0;width:100%;margin:0;padding:5px 0;border:0;border-radius:0;background:transparent;color:#27272a;resize:none;font-size:1rem;line-height:1.65;box-shadow:none}
+.sticky-note .note-body::placeholder{color:#78716c}
+.sticky-note .note-body:focus-visible{outline:none;box-shadow:inset 0 -2px 0 #0002}
+.sticky-bottom{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-top:9px;min-height:24px}
+.note-date{font-size:.68rem;color:#57534e}
+.note-retry{background:transparent;border:0;color:#b91c1c;font-weight:750;font-size:.75rem;padding:5px}
+@media(min-width:1280px){.notes-page-active{max-width:1800px}.notes-page-active .notes-view{padding:0}}
+@media(min-width:761px) and (max-width:1100px){.notes-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
+@media(max-width:760px){
+ .notes-grid{grid-template-columns:minmax(0,1fr);gap:20px;max-width:440px;margin:0 auto}
+ .sticky-note{height:auto;aspect-ratio:1/1;min-height:310px;padding:14px 18px 12px}
+ .notes-toolbar{margin-top:18px;gap:8px}.notes-toolbar .button{font-size:.9rem;padding:10px 12px}
+ .notes-title{font-size:1.15rem}.notes-view{padding:0 0 24px}
+ .note-tools button,.paper-picker summary{min-height:40px}.sticky-note .note-body{font-size:16px}
+}
+
+.header-pill.tasks-link{background:#2563eb;color:#fff;border-color:#2563eb}
+.header-pill.tasks-link:hover{background:#1d4ed8;border-color:#1d4ed8}
+
+/* 공통 16색 */
+.paper-yellow{--paper:#facc15;--ink:#854d0e}
+.paper-orange{--paper:#fb923c;--ink:#9a3412}
+.paper-pink{--paper:#f9a8d4;--ink:#be185d}
+.paper-red{--paper:#fca5a5;--ink:#b91c1c}
+.paper-blue{--paper:#93c5fd;--ink:#1d4ed8}
+.paper-sky{--paper:#7dd3fc;--ink:#0369a1}
+.paper-teal{--paper:#5eead4;--ink:#0f766e}
+.paper-green{--paper:#86efac;--ink:#15803d}
+.paper-lime{--paper:#bef264;--ink:#4d7c0f}
+.paper-purple{--paper:#c4b5fd;--ink:#7e22ce}
+.paper-indigo{--paper:#a5b4fc;--ink:#4338ca}
+.paper-brown{--paper:#d6a77a;--ink:#78350f}
+.paper-cream{--paper:#fde68a;--ink:#92400e}
+.paper-white{--paper:#ffffff;--ink:#64748b}
+.paper-gray{--paper:#cbd5e1;--ink:#475569}
+.paper-black{--paper:#334155;--ink:#f8fafc}
+.note-tools .paper-swatch{color:var(--ink)}.paper-swatch{background:var(--paper)}.paper-palette{grid-template-columns:repeat(4,minmax(0,1fr));width:232px}.sticky-note.paper-black,.sticky-note.paper-black .note-body,.sticky-note.paper-black .note-status,.sticky-note.paper-black .note-date{color:#f8fafc}.sticky-note.paper-black .note-body::placeholder{color:#cbd5e1}.sticky-note.paper-black .paper-picker summary,.sticky-note.paper-black .note-retry,.sticky-note.paper-black .remove-note{color:#f8fafc;background:#ffffff20}
+.category-row .color-picker .paper-palette{grid-template-columns:repeat(4,minmax(0,1fr));width:232px;gap:5px;padding:8px}.category-row .color-picker .paper-swatch{background:var(--paper);padding:8px 4px;min-height:38px;border:1px solid #0002;border-radius:7px;font-size:.75rem}
+.sticky-note.paper-yellow{background:#fff7c2}
+.sticky-note.paper-orange{background:#ffe7c7}
+.sticky-note.paper-pink{background:#fce2ee}
+.sticky-note.paper-red{background:#ffe0df}
+.sticky-note.paper-blue{background:#dfeaff}
+.sticky-note.paper-sky{background:#e0f3ff}
+.sticky-note.paper-teal{background:#ddf6ef}
+.sticky-note.paper-green{background:#e4f4df}
+.sticky-note.paper-lime{background:#f0f7d5}
+.sticky-note.paper-purple{background:#ece3fa}
+.sticky-note.paper-indigo{background:#e2e5f8}
+.sticky-note.paper-brown{background:#efdfd0}
+.sticky-note.paper-cream{background:#fff5df}
+.sticky-note.paper-white{background:#ffffff}
+.sticky-note.paper-gray{background:#eef1f5}
+.sticky-note.paper-black{background:#d1d5db}
+.sticky-note.paper-black,.sticky-note.paper-black .note-body,.sticky-note.paper-black .note-status,.sticky-note.paper-black .note-date{color:#334155}
+.sticky-note.paper-black .note-body::placeholder{color:#64748b}
+.sticky-note.paper-black .paper-picker summary{color:#334155;background:#ffffff5c}
+.sticky-note.paper-black .note-retry,.sticky-note.paper-black .remove-note{color:#b91c1c;background:#ffffff5c}

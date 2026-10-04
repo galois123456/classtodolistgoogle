@@ -9,9 +9,9 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./notes.css"><link rel="stylesheet" href="./timetable.css">
   <title>나만의 학교 일정 To Do List</title>
-  <script type="module" crossorigin src="./assets/index-xAg6yjJA.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DN1cXAqB.css">
 </head>
 <body>
   <div id="setupError" class="setup-error" hidden></div>
@@ -54,7 +54,7 @@
     <footer>Google ver1.01 · made by yoonsungho</footer>
   </div>
   <dialog id="monthDialog"><form id="monthForm" class="month-form"><h2>연도·월 바로 이동</h2><label>연도<input id="jumpYear" type="number" min="1900" max="9999" required></label><label>월<select id="jumpMonth"><option value="1">1월</option><option value="2">2월</option><option value="3">3월</option><option value="4">4월</option><option value="5">5월</option><option value="6">6월</option><option value="7">7월</option><option value="8">8월</option><option value="9">9월</option><option value="10">10월</option><option value="11">11월</option><option value="12">12월</option></select></label><div class="dialog-actions"><button id="cancelMonth" class="button secondary" type="button">취소</button><button class="button primary" type="submit">이동</button></div></form></dialog>
-  <dialog id="timetableCellDialog"><form id="timetableCellForm" class="month-form"><h2 id="timetableCellTitle"></h2><div id="timetableBaseFields"><label>교실<input id="timetableRoom" maxlength="80" list="timetableRooms" autocomplete="off"><datalist id="timetableRooms"></datalist></label><label>과목<input id="timetableSubject" maxlength="80"></label><div class="timetable-color-field"><span>칸 색상</span><input id="timetableColor" type="hidden"><details id="timetableColorPicker" class="paper-picker"><summary id="timetableColorLabel">색상 ▾</summary><div id="timetableColorPalette" class="timetable-color-palette paper-palette" role="group" aria-label="칸 색상 선택"></div></details></div><p id="timetableAutofill" class="muted" role="status"></p></div><label id="timetableDetailField">세부사항<textarea id="timetableDetail" rows="6" maxlength="10000"></textarea></label><p id="timetableCellError" role="alert"></p><div class="dialog-actions"><button id="timetableCellCancel" class="button secondary" type="button">취소</button><button id="timetableCellSave" class="button primary" type="submit">저장</button></div></form></dialog><script src="./config.js"></script>
+  <dialog id="timetableCellDialog"><form id="timetableCellForm" class="month-form"><h2 id="timetableCellTitle"></h2><div id="timetableBaseFields"><label>교실<input id="timetableRoom" maxlength="80" list="timetableRooms" autocomplete="off"><datalist id="timetableRooms"></datalist></label><label>과목<input id="timetableSubject" maxlength="80"></label><div class="timetable-color-field"><span>칸 색상</span><input id="timetableColor" type="hidden"><details id="timetableColorPicker" class="paper-picker"><summary id="timetableColorLabel">색상 ▾</summary><div id="timetableColorPalette" class="timetable-color-palette paper-palette" role="group" aria-label="칸 색상 선택"></div></details></div><p id="timetableAutofill" class="muted" role="status"></p></div><label id="timetableDetailField">세부사항<textarea id="timetableDetail" rows="6" maxlength="10000"></textarea></label><p id="timetableCellError" role="alert"></p><div class="dialog-actions"><button id="timetableCellCancel" class="button secondary" type="button">취소</button><button id="timetableCellSave" class="button primary" type="submit">저장</button></div></form></dialog><script src="./config.js"></script><script type="module" src="./src.js"></script>
 <dialog id="googleReconnect" class="google-reconnect"><h2>구글 Drive 다시 연결</h2><p id="googleReconnectMessage" role="status"></p><div class="google-reconnect-actions"><button id="googleReconnectButton" type="button" class="button primary">구글 다시 연결</button><button id="googleReconnectCancel" type="button" class="button secondary">나중에</button></div></dialog>
 </body>
 </html>
